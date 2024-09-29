@@ -11,54 +11,14 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  // pages: {
-  //   signIn: "/sign-in"
-  // },
+  pages: {
+    signIn: "/sign-in"
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email", placeholder: "xyz@xyz.com"},
-        password: { label: "Password", type: "password", placeholder: "Your super secret password"}
-      },
-      async authorize(credentials: any) {
-        const email = credentials.email;
-        const password = credentials.password;
-
-        let hashedPassword;
-        crypto.pbkdf2(password, "salt1", 100000, 128, "sha512", (err, hashedPassword) => {
-          hashedPassword = hashedPassword
-        })
-
-        const user = await db.user.findFirst({
-          where: {
-            email,
-            // Check for password
-          }
-        })
-
-        if(!user) {
-          return {
-            id: "",
-            email: email
-
-          }
-        }
-
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          picture: user.image,
-          username: user.username
-        }
-      }
-    })
   ],
   callbacks: {
     async session({session, token}) {
