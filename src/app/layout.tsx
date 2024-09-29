@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google"
+import { DM_Sans } from "next/font/google";
 import "../styles/globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
+import Providers from "@/components/Providers";
+import { Toaster } from "@/components/ui/toaster";
 
-export const font = DM_Sans({ subsets: ['latin']})
+export const font = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,13 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn("min-h-screen bg-white antialiased", font.className)}
-      >
-        <Navbar />
-        <main className="">
-          {children}
-        </main>
+      <body className={cn("min-h-screen bg-white antialiased", font.className)}>
+        <Providers>
+          <Navbar />
+          <main className="container max-w-[1400px] mx-auto h-full pt-20">
+            {children}
+          </main>
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
