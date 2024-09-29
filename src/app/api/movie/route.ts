@@ -14,10 +14,12 @@ export async function POST(req: Request) {
 
     const { name, releaseDate } = await req.json();
 
+    const parsedRealsedDate = new Date(releaseDate);
+
     const movieExist = await db.movie.findFirst({
       where: {
         name,
-        releaseDate,
+        releaseDate: parsedRealsedDate,
       }
     })
 
@@ -28,7 +30,7 @@ export async function POST(req: Request) {
     await db.movie.create({
       data: {
         name,
-        releaseDate,
+        releaseDate: parsedRealsedDate,
         userId: session.user.id
       }
     })
@@ -36,6 +38,7 @@ export async function POST(req: Request) {
     return new Response("OK")
 
   } catch (error) {
+    console.log(error)
     return new Response("Something went wrong", { status: 500 })
   }
 }
