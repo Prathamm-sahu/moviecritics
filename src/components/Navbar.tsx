@@ -12,7 +12,7 @@ const Navbar: FC<NavbarProps> = async ({}) => {
   return (
     <div className="fixed top-0 inset-x-0 h-fit z-[10] py-2  bg-gray-300">
       <div className="flex items-center justify-between max-w-[1500px] h-full mx-auto px-5">
-        <div>MOVIECRITC</div>
+        <Link href={"/"} className="text-lg font-medium">MOVIECRITC</Link>
 
         {session?.user ? (
           <NavButton />
@@ -20,8 +20,9 @@ const Navbar: FC<NavbarProps> = async ({}) => {
           <Link
             href="/sign-in"
             className={buttonVariants({
-              className: "bg-indigo-600 text-white hover:bg-indigo-700",
+              className: "bg-indigo-600 text-white hover:bg-indigo-700 rounded",
             })}
+             
           >
             Sign In
           </Link>
