@@ -83,7 +83,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { movieId: 
       return new Response("Movie not found", { status: 404 })
     }
 
-    if(movieExists.userId !== session.user.id) {
+    if(movieExists.userId !== session?.user.id) {
       return new Response("Unauthorized", { status: 403 })
     }
 
