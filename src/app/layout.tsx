@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google"
 import "../styles/globals.css";
+import { cn } from "@/lib/utils";
+import Navbar from "@/components/Navbar";
 
 export const font = DM_Sans({ subsets: ['latin']})
 
@@ -17,9 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={font.className}
+        className={cn("min-h-screen bg-white antialiased", font.className)}
       >
-        {children}
+        <Navbar />
+        <main className="">
+          {children}
+        </main>
       </body>
     </html>
   );
