@@ -48,11 +48,13 @@ model User {
   name          String?
   email         String?       @unique
   emailVerified DateTime?
+  password      String?
   username      String?       @unique
   image         String?
   accounts      Account[]
   sessions      Session[]
-  MovieReview   MovieReview[]
+  movies         Movie[]
+  movieReviews   MovieReview[]
 }
 
 model Movie {
@@ -60,17 +62,19 @@ model Movie {
   name          String
   releaseDate   DateTime
   averageRating Int?
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  MovieReview   MovieReview[]
+  movieReviews  MovieReview[]
 }
 
 model MovieReview {
   id        String   @id @default(cuid())
   movieId   String
-  movie     Movie    @relation(fields: [movieId], references: [id])
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   rating    Int
   comment   String
   createdAt DateTime @default(now())
