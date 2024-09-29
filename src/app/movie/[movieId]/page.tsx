@@ -26,7 +26,7 @@ const Page: FC<PageProps> = ({ params }) => {
   const fetchMovieById = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3000/api/movie/${params.movieId}`
+        `/api/movie/${params.movieId}`
       );
       setMovie(data);
     } catch (error) {
