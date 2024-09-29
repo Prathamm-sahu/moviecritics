@@ -7,7 +7,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { ratingId: 
   try {
     const session = await getAuthSession();
 
-    if (session?.user) {
+    if (!session?.user) {
       return new Response("Unauthenticated", { status: 401 });
     }
 
@@ -37,6 +37,34 @@ export async function PATCH(req: NextRequest, { params }: { params: { ratingId: 
       }
     })
 
+    const movie = await db.movie.findFirst({
+      where: {
+        id: updatedRating.movieId
+      },
+      include: {
+        movieReviews: true
+      }
+    })
+
+    if(!movie) {
+      return new Response("Movie", { status: 404 })
+    }
+  
+    const sumOfRatings = movie?.movieReviews.reduce((total, review) => {
+      return total + review.rating
+    }, 0)
+
+    const avgRating = sumOfRatings/movie?.movieReviews.length
+
+    await db.movie.update({
+      where: {
+        id: movie.id
+      },
+      data: {
+        averageRating: avgRating
+      }
+    })
+
     return NextResponse.json(updatedRating)
   } catch (error) {
     return new Response("Something went wrong", { status: 500 });
@@ -48,7 +76,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { ratingId:
   try {
     const session = await getAuthSession();
 
-    if (session?.user) {
+    if (!session?.user) {
       return new Response("Unauthenticated", { status: 401 });
     }
 
@@ -62,13 +90,41 @@ export async function DELETE(req: NextRequest, { params }: { params: { ratingId:
       return new Response("Review not found", { status: 404 })
     }
 
-    if(reviewExists.userId !== session.user.id) {
+    if(reviewExists.userId !== session?.user.id) {
       return new Response("Unauthorized", { status: 403 })
     }
 
-    await db.movieReview.delete({
+    const deleteRating = await db.movieReview.delete({
       where: {
         id: params.ratingId
+      }
+    })
+
+    const movie = await db.movie.findFirst({
+      where: {
+        id: deleteRating.movieId
+      },
+      include: {
+        movieReviews: true
+      }
+    })
+
+    if(!movie) {
+      return new Response("Movie", { status: 404 })
+    }
+  
+    const sumOfRatings = movie?.movieReviews.reduce((total, review) => {
+      return total + review.rating
+    }, 0)
+
+    const avgRating = sumOfRatings/movie?.movieReviews.length
+
+    await db.movie.update({
+      where: {
+        id: movie.id
+      },
+      data: {
+        averageRating: avgRating
       }
     })
 
