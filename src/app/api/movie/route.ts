@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 // Get all movies
 export async function GET(req: Request) {
   try {
-    const movies = db.movie.findMany({})
+    const movies = await db.movie.findMany({})
 
     return NextResponse.json(movies)
   } catch (error) {
