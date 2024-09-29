@@ -38,7 +38,7 @@ const Page: FC<PageProps> = ({ params }) => {
 
   useEffect(() => {
     fetchMovieById();
-  }, [movie]);
+  }, []);
 
   const handleDelete = async (id: string) => {
     await axios.delete(`/api/review/${id}`);
