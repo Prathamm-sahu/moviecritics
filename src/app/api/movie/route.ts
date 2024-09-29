@@ -14,11 +14,10 @@ export async function POST(req: Request) {
 
     const { name, releaseDate } = await req.json();
 
-
     const movieExist = await db.movie.findFirst({
       where: {
         name,
-        releaseDate
+        releaseDate,
       }
     })
 
@@ -26,11 +25,11 @@ export async function POST(req: Request) {
       return new Response("Movie already exists", { status: 400 })
     }
 
-
     await db.movie.create({
       data: {
         name,
-        releaseDate
+        releaseDate,
+        userId: session.user.id
       }
     })
 
