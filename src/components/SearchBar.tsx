@@ -16,27 +16,21 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import { useOnClickOutside } from '@/hooks/use-on-click-outside'
-import { Users } from 'lucide-react'
 
 interface SearchBarProps {}
-
-type QueryDataType = Movie & {
-  _count: Prisma.MovieCountOutputType
-}
 
 const SearchBar: FC<SearchBarProps> = ({}) => {
   const [input, setInput] = useState<string>('')
   const pathname = usePathname()
   const commandRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  const [queryData, setQueryData] = useState<QueryDataType[]>([])
 
   useOnClickOutside(commandRef, () => {
     setInput('')
   })
 
   const request = debounce(async () => {
-    refetch()
+    refetch() 
   }, 300)
 
   const debounceRequest = useCallback(() => {
@@ -60,20 +54,15 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     },
     queryKey: ['search-query'],
     enabled: false,
+    initialData: [],
   })
 
   useEffect(() => {
     setInput('')
   }, [pathname])
 
-  useEffect(() => {
-    if(queryResults !== undefined) {
-      setQueryData(queryResults)
-    }
-    setQueryData([])
-  }, [queryResults])
-
-  
+  console.log('Query Results:', queryResults)
+  console.log("Input", input)
 
   return (
     <Command
@@ -91,23 +80,22 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
 
       {input.length > 0 && (
         <CommandList className='absolute bg-white top-full inset-x-0 shadow rounded-b-md'>
-          {isFetched && <CommandEmpty>No results found.</CommandEmpty>}
-          {(queryData?.length ?? 0) > 0 ? (
+          {isFetched && queryResults.length === 0 &&  <CommandEmpty>No results found.</CommandEmpty>}
+          {((queryResults?.length > 0)) && (
             <CommandGroup heading='Movies'>
-              {(queryData ?? []).map((movie: any) => (
+              {queryResults?.map((movie) => (
                 <CommandItem
                   onSelect={(e) => {
                     router.push(`/movie/${movie.id}`)
                     router.refresh()
                   }}
-                  className='cursor-pointer'
                   key={movie.id}
                   value={movie.name}>
                   <a href={`/movie/${movie.id}`}>{movie.name}</a>
                 </CommandItem>
               ))}
             </CommandGroup>
-          ) : null}
+          )}
         </CommandList>
       )}
     </Command>
