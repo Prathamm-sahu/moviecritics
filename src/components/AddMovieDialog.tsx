@@ -35,9 +35,7 @@ const AddMovieDialog: FC<AddMovieDialogProps> = ({}) => {
         description: error.message
       })
     } finally {
-      setOpen(false)
-      window.location.reload()
-      
+      setOpen(false)    
     }
   }
   return (
